@@ -1,0 +1,69 @@
+{# src/Arii/JIDBundle/Resources/views/Default/history.html.twig #}
+{% extends "AriiI5Bundle::layout.html.twig" %}
+{% block body %}
+<body>
+<script type="text/javascript">
+var max_history = 0; // pas d'historique
+var chained = 0; // que des standalone
+var only_warning = 0; // que les problemes
+var update=30;
+var autorefresh;
+
+var myGridToolbar;
+var status;
+
+dhtmlxEvent(window,"load",function(){     
+    globalLayout = new dhtmlXLayoutObject(document.body,"2U");  
+    globalLayout.cells("a").setWidth(345); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );
+    
+    myGridToolbar = globalLayout.cells("b").attachToolbar();
+    myGridToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myGridToolbar.loadStruct( "{{ url('xml_I5_console_toolbar') }}");
+    
+    globalLayout.attachEvent("onContentLoaded", function(id){
+        globalLayout.cells(id).progressOff();
+    });    
+    myGridToolbar.attachEvent("onClick",function(itemid){
+        switch (itemid) {
+            case 'refresh':
+                globalLayout.cells("b").progressOn();
+                globalLayout.cells("b").attachURL( "{{ url('html_I5_console_exec') }}?exec="+myGridToolbar.getValue("exec"));
+                break;
+            case "print":
+                myGrid.printView();
+                break;
+            default:
+                alert(itemid);
+                break;
+        }
+    });
+    myGridToolbar.attachEvent("onEnter",function(itemid){
+        globalLayout.cells("b").progressOn();
+        globalLayout.cells("b").attachURL( "{{ url('html_I5_console_exec') }}?exec="+myGridToolbar.getValue("exec"));
+    });
+    
+    myGridToolbar.attachEvent("onStateChange",function(itemid, state){
+    });
+});
+
+function GlobalRefresh() {
+}
+
+function onShowMenu(rowId, celInd, grid) {
+}
+
+</script>
+</body>
+{% endblock %}

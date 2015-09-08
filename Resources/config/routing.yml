@@ -1,0 +1,89 @@
+arii_I5_index:
+    path:     /
+    defaults: { _controller: AriiI5Bundle:Default:index }
+
+json_I5_ribbon:
+    path:     /ribbon.json
+    defaults: { _controller: AriiI5Bundle:Default:ribbon }
+
+#=============
+# COMMAND
+#=============
+arii_I5_console:
+    path:     /console
+    defaults: { _controller: AriiI5Bundle:Command:console }
+
+xml_I5_console_toolbar:
+    path:     /console/toolbar.xml
+    defaults: { _controller: AriiI5Bundle:Command:toolbar }
+
+html_I5_console_exec:
+    path:     /console/exec.html
+    defaults: { _controller: AriiI5Bundle:Command:exec }
+    
+#=============
+# ACTIVE JOBS
+#=============
+arii_I5_wrkactjob:
+    path:     /jobs/wrkactjob
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob }
+
+xml_I5_jobs_grid_toolbar:
+    path:     /jobs/toolbar.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:toolbar }
+
+xml_I5_wrkactjob:
+    path:     /jobs/wrkactjob/grid.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob_grid }
+
+xml_I5_wrkjob:
+    path:     /jobs/wrkjob/grid.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkjob_grid }
+
+xml_I5_wrksbmjob:
+    path:     /jobs/wrksbmjob.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:wrksbmjob_grid }
+
+xml_I5_dspjob:
+    path:     /jobs/dspjob.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:dspjob_grid }
+
+xml_I5_dspjoblog:
+    path:     /jobs/dspjoblog.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:dspjoblog_grid }
+
+arii_I5_dspm:
+    path:     /jobs/wrkactjob
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob }
+
+#=============
+# USER JOBS
+#=============
+arii_I5_wrkusrjob:
+    path:     /jobs/wrkusrjob
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkusrjob }
+
+xml_I5_wrkusrjob:
+    path:     /jobs/wrkusrjob/grid.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkusrjob_grid }
+
+
+#=============
+# MESSAGES
+#=============
+arii_I5_dspmsg:
+    path:     /messages/dspmsg
+    defaults: { _controller: AriiI5Bundle:Messages:dspmsg }
+
+xml_I5_messages_grid_toolbar:
+    path:     /messages/toolbar.xml
+    defaults: { _controller: AriiI5Bundle:Messages:toolbar }
+
+xml_I5_dspmsg:
+    path:     /messages/dspmsg/grid.xml
+    defaults: { _controller: AriiI5Bundle:Messages:dspmsg_grid }
+
+xml_I5_dspmsgd:
+    path:     /messages/dspmsgd/grid.xml
+    defaults: { _controller: AriiI5Bundle:Messages:dspmsgd_grid }
+

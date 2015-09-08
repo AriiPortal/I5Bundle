@@ -1,0 +1,106 @@
+{% extends "::base.html.twig" %}
+{% block dhtmlx %}
+{% if arii_pro %}
+	<link rel="stylesheet" type="text/css" href="{{ asset('dhtmlx_pro/skins/' ~  skin ~ '/dhtmlx.css') }}" />
+        <script src="{{ asset('dhtmlx_pro/codebase/dhtmlx.js') }}" type="text/javascript"></script>
+{% else %}
+	<link rel="stylesheet" type="text/css" href="{{ asset('dhtmlx_gpl/skins/terrace/dhtmlx.css') }}" />
+        <script src="{{ asset('dhtmlx_gpl/codebase/dhtmlx.js') }}" type="text/javascript"></script>
+{% endif %}
+{% endblock dhtmlx %}
+{% block dhtmlx_plus %}
+{% endblock dhtmlx_plus %}
+{% block body %}
+{% endblock body %}
+{% block script %}
+<script>
+function StateRibbon (itemid,state) {
+    switch(itemid) {
+         case 'chained':
+            chained = (state?1:0);
+            globalLayout.progressOn();
+            break;
+         case 'only_warning':
+            only_warning = (state?1:0);
+            globalLayout.progressOn();
+            break;
+        default:
+            alert(itemid);
+    }
+    GlobalRefresh();    
+}
+
+function ClickRibbon (itemid,state) {
+    switch(itemid) {
+    case '-1': case '-2': case '-3': case '-4': case '-5': case '-6':
+    case '-7': case '-14': case '-21': 
+    case '-30': case '-60': case '-90': case '-120':
+    case '-365':
+        dhx4.ajax.get( "{{ url('arii_session_update') }}?ref_past="+itemid, function() {
+            var currentTime = new Date();
+            var newTime = new Date();
+            newTime.setDate(currentTime.getDate() + Number(itemid) );
+            var day = newTime.getDate();
+            var month = newTime.getMonth()+1;
+            var year = newTime.getFullYear();
+            if (day < 10){
+            day = "0" + day;
+            }
+            if (month < 10){
+            month = "0" + month;
+            }
+            myRibbon.setItemText( "ref_past", year + "-" + month + "-" +  day );
+            globalLayout.progressOn();
+            GlobalRefresh();    
+        });
+        break;
+     case '5':
+    case '30':
+    case '60':
+    case '300':
+    case '900':
+    case '1800':
+    case '3600':
+        update = itemid;
+        dhx4.ajax.get( "{{ url('arii_session_update') }}?refresh="+itemid);
+        GlobalRefresh();
+        break;
+    case 'menu_jobs':
+        window.location = "{{ url('arii_I5_wrkactjob') }}";
+        break;
+    case 'menu_messages':
+        window.location = "{{ url('arii_I5_dspmsg') }}";
+        break;
+    case 'menu_console':
+        window.location = "{{ url('arii_I5_console') }}";
+        break;
+   case 'filter_edit':
+        window.location = "{{ url('arii_filters') }}";
+        break;
+    case 'filter_all':
+            globalLayout.cells("a").progressOn();
+            globalLayout.cells("b").progressOn();
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter=-1"+itemid.substr(7), function(){
+                GridRefresh();
+            });
+        break;
+    default:
+        if (itemid.substr(0,6)=='filter') {
+            globalLayout.cells("a").progressOn();
+            globalLayout.cells("b").progressOn();
+//            this.setItemText( 'filter', this.getListOptionText('filter',itemid));
+            this.setItemText("current_filter",myRibbon.getItemOptionText('Filters',itemid));
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter="+itemid.substr(7), function(){
+                GridRefresh();
+            });
+        }
+        else {
+            alert(itemid);
+        }
+    }
+}
+
+</script>
+{% endblock script %}
+
+            

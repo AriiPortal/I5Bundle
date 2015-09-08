@@ -1,0 +1,134 @@
+{# src/Arii/JIDBundle/Resources/views/Default/history.html.twig #}
+{% extends "AriiI5Bundle::layout.html.twig" %}
+{% block body %}
+<body>
+<script type="text/javascript">
+var max_history = 0; // pas d'historique
+var chained = 0; // que des standalone
+var only_warning = 0; // que les problemes
+var update=30;
+var autorefresh;
+
+var myGridToolbar;
+var status;
+
+dhtmlxEvent(window,"load",function(){     
+    globalLayout = new dhtmlXLayoutObject(document.body,"3L");  
+    globalLayout.cells("a").setWidth(350); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );
+    
+    myGrid = globalLayout.cells("b").attachGrid();
+    myGrid.setImagePath( "{{ asset('bundles/ariicore/images/treegrid/') }}");
+    myGrid.setHeader("{{ "S-syst" | trans }},{{ "Job" | trans }},{{ "User" | trans }},{{ "Number" | trans }},{{ "en cours" | trans }},{{ "Type" | trans }},{{ "Pool" | trans }},{{ "Prio." | trans }},{{ "UC" | trans }},{{ "Opér" | trans }},{{ "T-Rép" | trans }},{{ "E-S" | trans }},{{ "% UC" | trans }},{{ "Fonction" | trans }},{{ "Etat" | trans }},{{ "Unit." | trans }}");
+    myGrid.attachHeader("#select_filter,#text_filter,#select_filter,#text_filter,#select_filter,#select_filter,#numeric_filter,#numeric_filter,#numeric_filter,#numeric_filter,#numeric_filter,#numeric_filter,#numeric_filter,#text_filter,#select_filter,#numeric_filter");
+    myGrid.setInitWidths("*,200,150,120,100,80,80,80,80,80,80,80,80,180,80,80");
+    myGrid.setColAlign("left,left,left,right,left,left,right,right,right,right,right,right,right,left,left,right");
+    myGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+    myGrid.setColSorting("str,str,str,int,str,int,int,int,int,int,int,int,int,str,str,int");
+    myGrid.init();
+    myGrid.load( "{{ url('xml_I5_wrkactjob') }}");
+    myGrid.attachEvent("onRowDblClicked",JobDetail );
+    myGrid.setColumnHidden(9,true);
+    myGrid.setColumnHidden(10,true);
+    myGrid.setColumnHidden(11,true);
+    myGrid.setColumnHidden(12,true);
+    
+    myGridToolbar = globalLayout.cells("b").attachToolbar();
+    myGridToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myGridToolbar.loadStruct( "{{ url('xml_I5_jobs_grid_toolbar') }}");
+    myGridToolbar.attachEvent("onClick",function(itemid){
+        switch (itemid) {
+            case 'refresh':
+                globalLayout.cells("b").progressOn();
+                GlobalRefresh();
+                break;
+            case "print":
+                myGrid.printView();
+                break;
+            default:
+                alert(itemid);
+                break;
+        }
+    });
+    myGridToolbar.attachEvent("onStateChange",function(itemid, state){
+         switch (itemid) {
+            case 'interval':
+                myGrid.setColumnHidden(9,!state); 
+                myGrid.setColumnHidden(10,!state); 
+                myGrid.setColumnHidden(11,!state); 
+                myGrid.setColumnHidden(12,!state); 
+                break;
+            default:
+                alert(itemid);
+                break;
+        }
+    });
+
+    myTabbar = globalLayout.cells("c").attachTabbar();
+    myTabbar.addTab("dspjob","{{ "DSPJOB" | trans }}","120px", null, true);
+    myTabbar.addTab("dspjoblog","{{ "DSPJOBLOG" | trans }}","120px");
+    myTabbar.attachEvent("onContentLoaded", function(id){
+        globalLayout.cells("c").progressOff();
+    });
+
+    autorefresh = setInterval( "GridRefresh()",update*1000);
+});
+
+function GlobalRefresh() {
+    clearInterval( autorefresh );
+    GridRefresh();
+    autorefresh = setInterval( "GridRefresh()", update*1000 );
+}
+
+function GridRefresh() {
+    var currentTime = new Date();
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    var seconds = currentTime.getSeconds();
+    if (minutes < 10){
+    minutes = "0" + minutes;
+    }
+    if (seconds < 10){
+    seconds = "0" + seconds;
+    }
+    myRibbon.setItemText( "refresh", hours + ":" + minutes + ":" +  seconds );
+    myGrid.load("{{ url('xml_I5_wrkactjob') }}?time="+seconds+"&history="+max_history+"&chained="+chained+"&only_warning="+only_warning, function(){    
+        globalLayout.cells("b").progressOff();
+//        myGrid.refreshFilters();
+//        myGrid.filterByAll();
+        myGrid.filterBy(4, status);  
+        globalLayout.progressOff();
+        globalLayout.cells("a").progressOff();
+    });    
+}
+
+function JobDetail(id) {
+    myTabbar.cells('dspjob').progressOn();
+    myTabbar.cells('dspjoblog').progressOn();
+    
+    // mise a jour de la toolbar
+    var status = myGrid.cells(id, 3 ).getValue();
+    var job = myGrid.cells(id, 1 ).getValue();
+    var user = myGrid.cells(id, 2 ).getValue();
+    var run = myGrid.cells(id, 3 ).getValue();
+    myTabbar.cells('dspjob').attachURL( "{{ url('xml_I5_dspjob') }}?job="+run+"/"+user+"/"+job);
+    myTabbar.cells('dspjoblog').attachURL( "{{ url('xml_I5_dspjoblog') }}?job="+run+"/"+user+"/"+job);
+}
+
+function onShowMenu(rowId, celInd, grid) {
+}
+
+</script>
+</body>
+{% endblock %}
