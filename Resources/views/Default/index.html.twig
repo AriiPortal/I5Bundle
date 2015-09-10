@@ -14,18 +14,18 @@ var status;
 
 dhtmlxEvent(window,"load",function(){     
     globalLayout = new dhtmlXLayoutObject(document.body,"3L");  
-    globalLayout.cells("a").setWidth(345); 
+    globalLayout.cells("a").setWidth(350); 
     globalLayout.cells("a").hideHeader(); 
     globalLayout.cells("b").hideHeader(); 
     globalLayout.cells("c").setHeight(260); 
 
     globalMenu = globalLayout.cells("a").attachMenu();
     globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
-    globalMenu.loadStruct("{ { url('xml_menu') }}");
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
 
     myRibbon = globalLayout.cells("a").attachRibbon(); 
     myRibbon.setIconPath( "{{ asset('bundles/ariicore/images/ribbon/') }}" );
-    myRibbon.loadStruct("{{ url('json_JID_ribbon') }}");
+    myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
     myRibbon.attachEvent("onStateChange", StateRibbon );
     myRibbon.attachEvent("onClick", ClickRibbon );
     
@@ -50,7 +50,7 @@ dhtmlxEvent(window,"load",function(){
                 align:"left"
             } 
     });
-    myDonut.load( "{{ url('xml_JID_jobs_pie') }}?chained="+chained+"&only_warning="+only_warning );
+    myDonut.load( "{{ url('xml_I5_jobs_pie') }}?chained="+chained+"&only_warning="+only_warning );
     
     myTree = myAccordion.cells("a2").attachTree();
 //    myTree = globalLayout.cells("a").attachTree();
@@ -134,91 +134,7 @@ dhtmlxEvent(window,"load",function(){
         }
     });
     
-    myGridMenu.attachEvent("onClick", function (menuitemId, type) {
-        var data = myGrid.contextID.split("_");
-        var rId = data[0];
-        var cInd = data[1];
-        spooler = myGrid.cells(rId,0).getValue();
-        switch (menuitemId) {
-           case "spooler_go":
-                window.open('/js/'+spooler+'/', spooler);
-                break;
-           case "show_info":
-                JobInfo( rId );
-            break;
-            case "doc":
-                window.open('{{ url('arii_JID_job_doc') }}?id='+rId,'arii_doc');
-                break;
-           case "job_history":
-                document.location.href = "{{ url('arii_JID_history_job') }}?id="+rId;
-            break;
-           case "order_history":
-                document.location.href = "{{ url('arii_JID_order_history') }}?id="+rId;
-            break;
-            case "show_why":
-                ShowWhy( rId);
-                break;
-            case "pause_spooler":
-                Spooler("{{ url('arii_XML_Command') }}?command=pause_spooler&spooler_id",spooler);
-                break;
-            case "continue_spooler":
-                Spooler("{{ url('arii_XML_Command') }}?command=continue_spooler&spooler_id",spooler);
-                break;
-            case "check_spooler":
-                // Spooler("{{ url('arii_JID_spooler_update') }}?id",spooler);
-                CheckSpooler(spooler);
-                break;
-            case "terminate_spooler":
-                Spooler("{{ url('arii_XML_Command') }}?command=restart_spooler&spooler_id",spooler);
-                break;
-            case "abort_spooler":
-                Spooler("{{ url('arii_XML_Command') }}?command=abort_spooler&spooler_id",spooler);
-                break;
-            case "purge_job":
-                PurgeJob( rId );
-            break;
-            case "job_detail":
-                JobDetail( rId );
-            break;
-            case "order_detail":
-                OrderDetail( rId );
-            break;
-            case "stop_chain":
-                Chain(rId,menuitemId,"{{ "Stop chain" | trans }}",null);
-                break;
-            case "unstop_chain":
-                Chain(rId,menuitemId,"{{ "Unstop chain" | trans }}",null);
-                break;
-            case "stop_node":
-                nId = mygrid.getUserData(rId,'TASK_ID');
-                Node(rId,nId,menuitemId,"{{ "Stop node" | trans }}",null);
-                break;
-            case "unstop_node":
-                nId = mygrid.getUserData(rId,'TASK_ID');
-                Node(rId,nId,menuitemId,"{{ "Unstop node" | trans }}",null);
-                break;
-            case "skip_node":
-                nId = mygrid.getUserData(rId,'TASK_ID');
-                Node(rId,nId,menuitemId,"{{ "Skip node" | trans }}",null);
-                break;
-            case "unskip_node":
-                nId = mygrid.getUserData(rId,'TASK_ID');
-                Node(rId,nId,menuitemId,"{{ "Unskip node" | trans }}",null);
-                break;            
-            case "suspend_order":
-            case "resume_order":
-                    alert(menuitemId);
-                break;
-            case "reset_order":
-                XMLCommand(rId,menuitemId);
-                break;
-            default:
-                alert("inconnu ! "+menuitemId);    
-        }
-        return true;
-    });
-
-    var myTabbar = globalLayout.cells("c").attachTabbar();
+    myTabbar = globalLayout.cells("c").attachTabbar();
     myTabbar.addTab("b1","{{ "Job" | trans }}","100px", null, true);
     myTabbar.addTab("b2","{{ "Log" | trans }}","100px");
     myTabbar.addTab("b3","{{ "History" | trans }}","100px");
@@ -356,17 +272,8 @@ function GridRefresh() {
     seconds = "0" + seconds;
     }
     myRibbon.setItemText( "refresh", hours + ":" + minutes + ":" +  seconds );
-    myGrid.loadXML("{{ url('xml_JID_jobs_grid') }}?time="+seconds+"&history="+max_history+"&chained="+chained+"&only_warning="+only_warning, function(){    
+    myGrid.loadXML("{{ url('xml_I5_jobs_grid') }}?time="+seconds+"&history="+max_history+"&chained="+chained+"&only_warning="+only_warning, function(){    
         globalLayout.cells("b").progressOff();
-//        myGrid.refreshFilters();
-//        myGrid.filterByAll();
-        myGrid.filterBy(4, status);  
-        myDonut.load( "{{ url('xml_JID_jobs_pie') }}?chained="+chained+"&only_warning="+only_warning, function () {
-            myDonut.refresh();                
-            globalLayout.progressOff();
-            globalLayout.cells("a").progressOff();
-            myTree.smartRefreshBranch(0,"{{ url('xml_JID_jobs_tree') }}?chained="+chained+"&only_warning="+only_warning);                    
-        });
     });    
 }
 

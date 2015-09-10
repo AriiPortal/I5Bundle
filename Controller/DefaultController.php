@@ -12,6 +12,11 @@ class DefaultController extends Controller
         return $this->render('AriiI5Bundle:Default:index.html.twig');
     }
     
+    public function readmeAction()
+    {
+        return $this->render('AriiI5Bundle:Default:readme.html.twig');
+    }
+    
     public function ribbonAction()
     {
         $response = new Response();

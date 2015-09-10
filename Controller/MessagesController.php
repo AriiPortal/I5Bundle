@@ -23,7 +23,7 @@ class MessagesController extends Controller
     public function dspmsg_gridAction()
     {
         $I5 = $this->container->get('arii_i5.exec');
-        $jobs = $I5->Exec('VA400Q1','autosys','oto6new','DSPMSG AUTOBATCH');     
+        $jobs = $I5->Exec('DSPMSG QSYSOPR');     
         
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
@@ -79,7 +79,7 @@ class MessagesController extends Controller
         $msg = $request->query->get( 'msg' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',"DSPMSGD '$msg'");     
+        $result = $I5->Exec("DSPMSGD '$msg'");     
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }

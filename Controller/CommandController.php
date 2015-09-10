@@ -26,7 +26,7 @@ class CommandController extends Controller
         $exec = $request->query->get( 'exec' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',$exec);     
+        $result = $I5->Exec($exec);     
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }

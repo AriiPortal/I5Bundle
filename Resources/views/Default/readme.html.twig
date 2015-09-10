@@ -1,0 +1,33 @@
+{# src/Arii/JIDBundle/Resources/views/Default/history.html.twig #}
+{% extends "AriiI5Bundle::layout.html.twig" %}
+{% block body %}
+<body>
+<script type="text/javascript">
+dhtmlxEvent(window,"load",function(){     
+    globalLayout = new dhtmlXLayoutObject(document.body,"2U");  
+    globalLayout.cells("a").setWidth(350); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('/bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );
+
+    myTree = globalLayout.cells("a").attachTree();
+    myTree.setImagesPath("{{ asset('bundles/ariicore/images/tree/') }}");
+    myTree.load("{{ url('xml_docs_tree') }}?route={{ app.request.attributes.get('_route') }}");
+    myTree.attachEvent("onClick",function(id){
+        globalLayout.cells("b").attachURL("{{ url('html_doc_view') }}?doc="+id);
+    })    
+    globalLayout.cells("b").attachURL("{{ url('html_Home_readme') }}?route={{ app.request.attributes.get('_route') }}");
+});
+
+</script>
+</body>
+{% endblock %}

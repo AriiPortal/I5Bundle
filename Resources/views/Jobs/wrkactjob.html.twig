@@ -103,12 +103,9 @@ function GridRefresh() {
     seconds = "0" + seconds;
     }
     myRibbon.setItemText( "refresh", hours + ":" + minutes + ":" +  seconds );
-    job = myGrid.getFilterElement(3);
-    alert(job);
+    job = myGrid.getFilterElement(3).value;
     myGrid.load("{{ url('xml_I5_wrkactjob') }}?time="+seconds+"&history="+max_history+"&chained="+chained+"&only_warning="+only_warning, function(){    
         globalLayout.cells("b").progressOff();
-//        myGrid.refreshFilters();
-//        myGrid.filterByAll();
         myGrid.filterBy(3, job);  
         globalLayout.progressOff();
         globalLayout.cells("a").progressOff();

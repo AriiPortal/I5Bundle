@@ -1,6 +1,10 @@
 arii_I5_index:
     path:     /
-    defaults: { _controller: AriiI5Bundle:Default:index }
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob }
+
+arii_I5_readme:
+    pattern:  /readme
+    defaults: { _controller: AriiI5Bundle:Default:readme }
 
 json_I5_ribbon:
     path:     /ribbon.json

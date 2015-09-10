@@ -28,7 +28,7 @@ class JobsController extends Controller
     public function wrkactjob_gridAction()
     {
         $I5 = $this->container->get('arii_i5.exec');
-        $jobs = $I5->Exec('VA400Q1','autosys','oto6new','WRKACTJOB');     
+        $jobs = $I5->Exec('WRKACTJOB');     
         
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
@@ -75,7 +75,7 @@ class JobsController extends Controller
     public function wrkusrjob_gridAction()
     {
         $I5 = $this->container->get('arii_i5.exec');
-        $jobs = $I5->Exec('VA400Q1','autosys','oto6new','WRKUSRJOB VABATCH');     
+        $jobs = $I5->Exec('WRKUSRJOB VABATCH');     
         
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
@@ -109,7 +109,7 @@ class JobsController extends Controller
     public function dspjob_grid2Action()
     {
         $I5 = $this->container->get('arii_i5.exec');
-        $jobs = $I5->Exec('VA400Q1','autosys','oto6new','DSPLOG');     
+        $jobs = $I5->Exec('DSPLOG');     
         print "<pre>";
         print_r($jobs);
         print "</pre>";
@@ -152,7 +152,7 @@ class JobsController extends Controller
         $job = $request->query->get( 'job' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',"WRKJOB '$job'");     
+        $result = $I5->Exec("WRKJOB '$job'");     
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }
@@ -163,7 +163,7 @@ class JobsController extends Controller
         $job = $request->query->get( 'job' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',"DSPJOB '$job'");     
+        $result = $I5->Exec("DSPJOB '$job'");     
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }
@@ -174,7 +174,7 @@ class JobsController extends Controller
         $job = $request->query->get( 'job' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',"DSPJOBLOG '$job'");     
+        $result = $I5->Exec("DSPJOBLOG '$job'");     
         print '<pre>'.$this->screen(utf8_encode($result)).'</pre>';
         exit();
     }
@@ -185,7 +185,7 @@ class JobsController extends Controller
         $job = $request->query->get( 'job' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec('VA400Q1','autosys','oto6new',"WRKSBMJOB 'QJVQEXEC'");     
+        $result = $I5->Exec("WRKSBMJOB 'QJVQEXEC'");     
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }
