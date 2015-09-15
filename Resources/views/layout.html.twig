@@ -14,6 +14,10 @@
 {% endblock body %}
 {% block script %}
 <script>
+var idmsg=0;
+msg = [];
+bar = [];
+
 function StateRibbon (itemid,state) {
     switch(itemid) {
          case 'chained':
@@ -72,7 +76,8 @@ function ClickRibbon (itemid,state) {
         window.location = "{{ url('arii_I5_dspmsg') }}";
         break;
     case 'menu_console':
-        window.location = "{{ url('arii_I5_console') }}";
+        // window.location = "{{ url('arii_I5_console') }}";
+        Console(idmsg++);
         break;
    case 'filter_edit':
         window.location = "{{ url('arii_filters') }}";
@@ -100,6 +105,35 @@ function ClickRibbon (itemid,state) {
     }
 }
 
+function Console (idmsg) {
+    var largeur = 1450;
+    var dhxWins = new dhtmlXWindows();
+    msg[idmsg] = dhxWins.createWindow( "console" ,  (document.body.offsetWidth-largeur)/2, 50, largeur, 925 );
+
+    msg[idmsg].attachEvent("onContentLoaded", function(id){
+        msg[idmsg].progressOff();
+    });    
+
+    bar[idmsg] = msg[idmsg].attachToolbar();
+    bar[idmsg].setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    bar[idmsg].loadStruct( "{{ url('xml_I5_console_toolbar') }}");
+            
+    bar[idmsg].attachEvent("onClick",function(itemid){
+        switch (itemid) {
+            case 'refresh':
+                msg[idmsg].progressOn();
+                msg[idmsg].attachURL( "{{ url('html_I5_console_exec') }}?exec="+bar[idmsg].getValue("exec"));
+                break;
+            default:
+                alert(itemid);
+                break;
+        }
+    });
+    bar[idmsg].attachEvent("onEnter",function(itemid){
+        msg[idmsg].progressOn();
+        msg[idmsg].attachURL( "{{ url('html_I5_console_exec') }}?exec="+bar[idmsg].getValue("exec"));
+    });
+}
 </script>
 {% endblock script %}
 
