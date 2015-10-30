@@ -26,7 +26,8 @@ class CommandController extends Controller
         $exec = $request->query->get( 'exec' );
 
         $I5 = $this->container->get('arii_i5.exec');
-        $result = $I5->Exec($exec);     
+        $result = $I5->Exec($exec);
+        header('Content-Type: text/html; charset=utf-8');        
         print '<pre>'.utf8_encode($result).'</pre>';
         exit();
     }
