@@ -6,10 +6,14 @@
           "text_pos": "top", 
           "list":
           [
-             {   "type": "buttonSelect", 
+             {   "type": "button", 
                  text:"", 
                  "isbig": true, 
-                 "img": "48/i5.png", 
+                 "img": "48/i5.png"
+              },
+              {  "type": "buttonSelect", 
+                 text:"", 
+                 "img": "view.png", 
                  items:
                  [ 
                     { id:"menu_jobs", text: "{{ "Jobs" | trans }}", img: "job.png" },
@@ -29,39 +33,41 @@
               {     "type":"button",
                     id:"menu_console", 
                     tooltip: "{{ "Console" | trans }}", 
-                    img: "console.png" }
-          ]
-      },      
-     {   "type":"block", 
-          "id": "current_filter",
-          {% if (app.session.get('user_filter')|length) >0 %}
-          {% set filter = app.session.get('user_filter') %}
-          text:"{{ filter.name }}",
-          {% else %}
-          text:"{{ "Filter" | trans }}", 
-          {% endif %}
-          "text_pos": "bottom", 
-          "list":
-          [
-             {   "type": "buttonSelect", 
+                    img: "console.png"
+              },
+              {type : "newLevel"},
+{% set current_db = app.session.get('spooler') %} 
+              {   id: "spooler", 
+                  "type":"buttonSelect", 
+                  text:"", 
+                  "img": "spooler.png",
+                  "items": 
+                  [ 
+{% for spooler in Spoolers %}
+{id:"{{ spooler.id }}", text:"{{ spooler.name }}"{% if spooler.name == current_db.name %}, img: "accept.png"{% endif %} },
+{% endfor %}
+                  ]
+               },
+            {   "type": "buttonSelect", 
                  text:"",
                  "id": "Filters",
-                 "isbig": true, 
-                 "img": "48/search.png", 
+                 "img": "zoom.png", 
                  items:
                  [ 
+              {id:"filter_edit","type":"button",text:"{{ "New" | trans }}","img":"zoom_in.png","tooltip": "{{ "Edit filter" | trans }}" },
      {% if (app.session.get('UserFilters')|length) >0 %}
-    {% set filter = app.session.get('user_filter') %}     
+            { id:"sepf0", type: "separator" },    
+    {% set current = app.session.get('user_filter') %}     
        {% set filters = app.session.get('UserFilters') %}     
         {% for k,filter in filters %}
-            { id:"filter_{{ filter.id }}", text: "{{ filter.name }}" },
+            { id:"filter_{{ filter.id }}", text: "{{ filter.name }}" {% if filter.name == current.name %}, img: "accept.png"{% endif %}  },
         {% endfor %}
     {% endif %}
                   ]
               },
-              {id:"filter_edit","type":"button",text:"","img":"edit.png","tooltip": "{{ "Edit filter" | trans }}" },
-              {id:"filter_all","type":"button",text:"","img":"zoom_out.png"},
+              {id:"filter_all","type":"button",tooltip:"{{ "All" | trans }}","img":"zoom_out.png"}
+              
           ]
-      }
-   ]
+      }  
+    ]
 }

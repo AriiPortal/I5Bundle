@@ -88,11 +88,26 @@ function ClickRibbon (itemid,state) {
         if (itemid.substr(0,6)=='filter') {
             globalLayout.cells("a").progressOn();
             globalLayout.cells("b").progressOn();
-//            this.setItemText( 'filter', this.getListOptionText('filter',itemid));
-            this.setItemText("current_filter",myRibbon.getItemOptionText('Filters',itemid));
+            // this.setItemText("current_filter",myRibbon.getItemOptionText('Filters',itemid));
             dhx4.ajax.get( "{{ url('arii_session_update') }}?filter="+itemid.substr(7), function(){
-                GridRefresh();
+                if (typeof GlobalRefresh == 'function') { GlobalRefresh(); }
+                else if (typeof GridRefresh == 'function') { GridRefresh(); }
+                // on recree le ruban 
+                myRibbon.loadStruct("{{ url('json_ATS_ribbon') }}");
             });
+        }
+        else if (itemid.substr(0,2)=='SP') {
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?spooler="+itemid.substr(2), function(loader,response) {
+                dhtmlx.message({
+                    type: "Notice",
+                    text: loader.xmlDoc.responseText,
+                    width: "800"
+                });
+                if (typeof GlobalRefresh == 'function') { GlobalRefresh(); }
+                else if (typeof GridRefresh == 'function') { GridRefresh(); }
+                // on recree le ruban 
+                myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
+            } );
         }
         else {
             alert(itemid);
