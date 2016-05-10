@@ -1,6 +1,6 @@
 arii_I5_index:
     path:     /
-    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob }
+    defaults: { _controller: AriiI5Bundle:Default:index }
 
 arii_I5_readme:
     pattern:  /readme
@@ -35,6 +35,10 @@ arii_I5_wrkactjob:
 xml_I5_jobs_grid_toolbar:
     path:     /jobs/toolbar.xml
     defaults: { _controller: AriiI5Bundle:Jobs:toolbar }
+
+xml_I5_wrkactjob_list:
+    path:     /jobs/wrkactjob/list.xml
+    defaults: { _controller: AriiI5Bundle:Jobs:wrkactjob_list }
 
 xml_I5_wrkactjob:
     path:     /jobs/wrkactjob/grid.xml
@@ -86,6 +90,10 @@ xml_I5_messages_grid_toolbar:
 xml_I5_dspmsg:
     path:     /messages/dspmsg/grid.xml
     defaults: { _controller: AriiI5Bundle:Messages:dspmsg_grid }
+
+xml_I5_dspmsg_list:
+    path:     /messages/dspmsg/list.xml
+    defaults: { _controller: AriiI5Bundle:Messages:dspmsg_list }
 
 xml_I5_dspmsgd:
     path:     /messages/dspmsgd/grid.xml

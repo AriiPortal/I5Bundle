@@ -1,0 +1,115 @@
+{% extends "AriiCoreBundle::base.html.twig" %}
+{% block head %}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
+<!-- Optional theme -->
+<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}">
+<!-- Latest compiled and minified JavaScript -->
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+{% endblock %} 
+{% block body %}
+<body>
+<div class="container-fluid">
+<div class="jumbotron">
+<img style="float: right;" src="{{ asset('logo.png') }}"/>
+  <h1>{{ job.run }} / {{ job.user }} / {{ job.name }}</h1>
+  <table>
+      <tr><td>Description de travail : </td><th>&nbsp;{{ job.desc }}</th></tr>
+      <tr><td>Bibliothèque : </td><th>&nbsp;{{ job.lib }}</th></tr>
+  </table>
+</div>
+
+<div class="table-responsive">
+  <table id="myTable" class="table tablesorter">
+    <thead>
+          <tr><th>{{ "Date" | trans }}</th><th>{{ "Heure" | trans }}</th><th>{{ "Message" | trans }}</tr>
+      </thead>
+      <tbody>
+    {% for line,DSP in dspjoblog %}
+    <tr class="{{ DSP.color }}">
+        <td>{{ DSP.date }}</td>
+        <td>{{ DSP.time }}</td>
+        <td  class="dl-horizontal">
+        {% for name,info in DSP.infos %}
+        {% if name == 'Message' %}
+            {{ info }}
+        {% endif %}
+        {% endfor %}                
+        </td>
+    </tr>
+    {% endfor %}
+      </tbody>
+  </table>
+</div>
+  
+<h2>{{ "Detail" | trans }}</h2>
+<div class="table-responsive">
+  <table id="myTable" class="table tablesorter">
+    <thead>
+          <tr><th>IDMSG</th><th>TYPE</th><th>GRV</th><th>DATE</th><th>HEURE</th><th>DE PGM</th><th>BIBLIO</th><th>INST</th><th>VERS PGM</th><th>BIBLIO</th><th>INST</th>
+    </tr>
+      </thead>
+      <tbody>
+    {% for line,DSP in dspjoblog %}
+        <tr class="{{ DSP.color }}">
+        <th>{{ DSP.id }}</th>
+        <th>{{ DSP.type }}</th>
+        <td>{{ DSP.grv }}</td>
+        <td>{{ DSP.date }}</td>
+        <td>{{ DSP.time }}</td>
+        <td>{{ DSP.de_pgm }}</td>
+        <td>{{ DSP.de_lib }}</td>
+        <td>{{ DSP.de_inst }}</td>
+        <td>{{ DSP.a_pgm }}</td>
+        <td>{{ DSP.a_lib }}</td>
+        <td>{{ DSP.a_inst }}</td>
+        </tr>
+        <tr class="{{ DSP.color }}">
+        <td colspan="2"></td>
+        <td colspan="9">
+        <dl  class="dl-horizontal">
+        {% for name,info in DSP.infos %}
+            {% if info is iterable %}
+            <dt>{{ name }}</dt>
+            <dd>{{ info.text }}
+                {% if info.type == 'li' %}
+                    <ul>
+                    {% for li in info.list %}
+                    <li>{{ li }}</li>
+                    {% endfor %}
+                    </ul>
+                {% elseif info.type == 'dl' %}
+                    <dl>
+                    {% for dt,dd in info.list %}
+                    <dt>{{ dt }}</dt>
+                    <dd>{{ dd }}</dd>
+                    {% endfor %}
+                    </dl>                    
+                {% endif %}
+            </dd>
+            {% elseif name == 'Message' %}
+            <dt>{{ name }}</dt>
+            <dd><b>{{ info }}</b></dd>
+            {% else %}
+            <dt>{{ name }}</dt>
+            <dd>{{ info }}</dd>
+            {% endif %}
+        {% endfor %}                
+        </dl>   
+        </td>
+        </tr>
+    {% endfor %}
+      </tbody>
+  </table>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+$(function(){
+$("#myTable").tablesorter();
+});
+});
+</script>
+</body>
+{% endblock %}
