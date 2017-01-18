@@ -34,20 +34,28 @@
                     id:"menu_console", 
                     tooltip: "{{ "Console" | trans }}", 
                     img: "console.png"
-              },
-              {type : "newLevel"},
-{% set current_db = app.session.get('spooler') %} 
-              {   id: "spooler", 
+              }              
+          ]
+      },    
+      {   "type":"block", 
+          text:"{{ "History" | trans }}", 
+          "text_pos": "bottom", 
+          "list":
+          [
+             {   id: "refresh", 
                   "type":"buttonSelect", 
-                  text:"", 
-                  "img": "spooler.png",
+                  text:"--:--:--", 
+                  "img": "refresh.png",
                   "items": 
                   [ 
-{% for spooler in Spoolers %}
-{id:"{{ spooler.id }}", text:"{{ spooler.name }}"{% if spooler.name == current_db.name %}, img: "accept.png"{% endif %} },
-{% endfor %}
+                     { id: "5", text: "5 {{ "seconds" | trans }}" },
+                     { id: "30", text: "30 {{ "seconds" | trans }}" },
+                     { id: "60", text: "1 {{ "minute" | trans }}" },
+                     { id: "300", text: "5 {{ "minutes" | trans }}" },
+                     { id: "1800", text: "15 {{ "minutes" | trans }}" },
+                     { id: "3600", text: "1 {{ "hour" | trans }}" }
                   ]
-               },
+              },
             {   "type": "buttonSelect", 
                  text:"",
                  "id": "Filters",
@@ -65,9 +73,22 @@
     {% endif %}
                   ]
               },
-              {id:"filter_all","type":"button",tooltip:"{{ "All" | trans }}","img":"zoom_out.png"}
-              
+              {id:"filter_all","type":"button",tooltip:"{{ "All" | trans }}","img":"zoom_out.png"},
+              {type : "newLevel"},
+              {   id: "spooler", 
+                  "type":"buttonSelect", 
+                  text:"", 
+                  "img": "spooler.png",
+                  "items": 
+                  [ 
+{% for spooler in Spoolers %}
+{id:"node.{{ spooler.name }}", text:"{{ spooler.title }}"{% if spooler.name == 'test' %}, img: "accept.png"{% endif %} },
+{% endfor %}
+                  ]
+               }
+
           ]
-      }  
+      }
+  
     ]
 }

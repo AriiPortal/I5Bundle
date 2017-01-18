@@ -3,13 +3,17 @@ arii_I5_index:
     defaults: { _controller: AriiI5Bundle:Default:index }
 
 arii_I5_readme:
-    pattern:  /readme
+    path:  /readme
     defaults: { _controller: AriiI5Bundle:Default:readme }
 
 json_I5_ribbon:
     path:     /ribbon.json
     defaults: { _controller: AriiI5Bundle:Default:ribbon }
 
+xml_I5_jobs_toolbar:
+    path:     /jobs_toolbar.xml
+    defaults: { _controller: AriiI5Bundle:Default:jobs_toolbar }
+    
 #=============
 # COMMAND
 #=============

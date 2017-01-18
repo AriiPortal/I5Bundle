@@ -27,9 +27,21 @@ class JobsController extends Controller
 
     public function wrkactjob_listAction()
     {
+        // date de reference
+        $session = $this->container->get('arii_core.session');
+        
+        // filtres
+        $Filter = $session->getUserFilter();
+        
         $I5 = $this->container->get('arii_i5.exec');
-        $jobs = $I5->Exec('WRKACTJOB JOB(E*)');     
-
+        $filter = str_replace('%','*',$Filter['job']);
+        if ($filter=='*') {        
+            $jobs = $I5->Exec('WRKACTJOB');     
+        }
+        else {
+            $jobs = $I5->Exec('WRKACTJOB JOB('.$filter.')');     
+        }
+        
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml');
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
@@ -45,6 +57,17 @@ class JobsController extends Controller
 //   QPADEV0005   MUG         435839   MUG         INT    3  20       0,0    0    0,0      0    0,0  CMD-WRKJOB      DSPW          1            
             //    ([ \d]{4})  ([ \d]{4}) ([ \d]{10})
             if (preg_match("/^(\s*\w+)\s+(\w+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+([\d,\+].*?)  ([ \d]{4}) ([ \d,]{6}) ([ \d,]{6}) ([ \d,]{6}) (.{14})  (\w+)  ([ \d]{9})/",$j,$matches)) {
+                if (substr($matches[1],2,1)!=' ') {                   
+                    $sys = substr($matches[1],1);
+                    $matches[1]='';
+                }
+                else {
+                    $matches[1] = substr($matches[1],3);
+                }
+                
+                if (trim($matches[1])=='') continue;
+                
+                $matches[0] = $sys; 
                 switch ($matches[14]) {
                     case 'MSGW':
                         $xml .= "<row style='background-color: #fbb4ae;'>";
@@ -56,14 +79,6 @@ class JobsController extends Controller
                         $xml .= "<row>";
                         break;
                 }
-                if (substr($matches[1],2,1)!=' ') {                   
-                    $sys = substr($matches[1],1);
-                    $matches[1]='';
-                }
-                else {
-                    $matches[1] = substr($matches[1],3);
-                }
-                $matches[0] = $sys; 
                 for($i=0;$i<5;$i++) {
                     $xml .= "<cell>".trim($matches[$i])."</cell>";
                 }

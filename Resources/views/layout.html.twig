@@ -15,14 +15,6 @@ bar = [];
 
 function StateRibbon (itemid,state) {
     switch(itemid) {
-         case 'chained':
-            chained = (state?1:0);
-            globalLayout.progressOn();
-            break;
-         case 'only_warning':
-            only_warning = (state?1:0);
-            globalLayout.progressOn();
-            break;
         default:
             alert(itemid);
     }
@@ -80,24 +72,24 @@ function ClickRibbon (itemid,state) {
     case 'filter_all':
             globalLayout.cells("a").progressOn();
             globalLayout.cells("b").progressOn();
-            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter=-1"+itemid.substr(7), function(){
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter=-1"+itemid.substring(7), function(){
                 GridRefresh();
             });
         break;
     default:
-        if (itemid.substr(0,6)=='filter') {
+        if (itemid.substring(0,6)=='filter') {
             globalLayout.cells("a").progressOn();
             globalLayout.cells("b").progressOn();
             // this.setItemText("current_filter",myRibbon.getItemOptionText('Filters',itemid));
-            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter="+itemid.substr(7), function(){
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?filter="+itemid.substring(7), function(){
                 if (typeof GlobalRefresh == 'function') { GlobalRefresh(); }
                 else if (typeof GridRefresh == 'function') { GridRefresh(); }
                 // on recree le ruban 
-                myRibbon.loadStruct("{{ url('json_ATS_ribbon') }}");
+                myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
             });
         }
-        else if (itemid.substr(0,2)=='SP') {
-            dhx4.ajax.get( "{{ url('arii_session_update') }}?spooler="+itemid.substr(2), function(loader,response) {
+        else if (itemid.substring(0,2)=='SP') {
+            dhx4.ajax.get( "{{ url('arii_session_update') }}?spooler="+itemid.substring(2), function(loader,response) {
                 dhtmlx.message({
                     type: "Notice",
                     text: loader.xmlDoc.responseText,
@@ -109,6 +101,15 @@ function ClickRibbon (itemid,state) {
                 myRibbon.loadStruct("{{ url('json_I5_ribbon') }}");
             } );
         }
+        if (itemid.substring(0,5)=='node.') {
+             dhx4.ajax.get( "{{ url('arii_session_update') }}?node="+itemid.substring(5), function(loader,response) {
+                dhtmlx.message({
+                    type: "Notice",
+                    text: loader.xmlDoc.responseText,
+                    width: "800"
+                });
+            } );
+        }            
         else {
             alert(itemid);
         }

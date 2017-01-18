@@ -5,7 +5,7 @@
 <script type="text/javascript">
 var max_history = 0; // pas d'historique
 var chained = 0; // que des standalone
-var only_warning = 0; // que les problemes
+var only_warning = 1; // que les problemes
 var update=30;
 var autorefresh;
 
@@ -36,13 +36,37 @@ dhtmlxEvent(window,"load",function(){
     myJobs.setImagePath( "{{ asset('bundles/ariicore/images/treegrid/') }}");
     myJobs.setHeader("{{ "S-syst" | trans }},{{ "Job" | trans }},{{ "User" | trans }},{{ "Number" | trans }}");
     myJobs.attachHeader("#select_filter,#text_filter,#select_filter,#text_filter");
-    myJobs.setInitWidths("0,200,150,120");
+    myJobs.setInitWidths("150,200,150,150");
     myJobs.setColAlign("left,left,left,right");
     myJobs.setColTypes("ro,ro,ro,ro");
     myJobs.setColSorting("str,str,str,int");
+    myJobs.setColumnHidden(0,true);
     myJobs.init();
-    myJobs.load( "{{ url('xml_I5_wrkactjob_list') }}");
     myJobs.attachEvent("onRowDblClicked",JobDetail );
+
+    myJobsToolbar = myTab.cells("jobs").attachToolbar();
+    myJobsToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myJobsToolbar.loadStruct( "{{ url('xml_I5_jobs_toolbar') }}");
+    myJobsToolbar.attachEvent("onClick",function(itemid){
+         switch (itemid) {
+            default:
+                alert(itemid);
+                break;
+        }
+    });
+    myJobsToolbar.attachEvent("onStateChange",function(itemid, state){
+         switch (itemid) {
+            case "sbs":
+                    myJobs.setColumnHidden(0,!state);
+                break;
+            case "user":
+                    myJobs.setColumnHidden(2,!state);
+                break;
+            default:
+                alert(itemid);
+                break;
+        }
+    });
     
     myMsgs = myTab.cells("messages").attachGrid();
     myMsgs.setImagePath( "{{ asset('bundles/ariicore/images/treegrid/') }}");
@@ -57,12 +81,13 @@ dhtmlxEvent(window,"load",function(){
     myMsgs.attachEvent("onRowDblClicked",MsgDetail );
     
     myTabbar = globalLayout.cells("b").attachTabbar();
-    myTabbar.addTab("dspjoblog","{{ "DSPJOBLOG" | trans }}","120px", null, true);
-    myTabbar.addTab("dspjob","{{ "DSPJOB" | trans }}","120px");
+    myTabbar.addTab("dspjob","{{ "DSPJOB" | trans }}","120px", null, true);
+    myTabbar.addTab("dspjoblog","{{ "DSPJOBLOG" | trans }}","120px");
     myTabbar.attachEvent("onContentLoaded", function(id){
         myTabbar.cells(id).progressOff();
     });
-
+    
+    GridRefresh();
     autorefresh = setInterval( "GridRefresh()",update*1000);
 });
 
