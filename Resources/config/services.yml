@@ -5,4 +5,4 @@ services:
 
     arii_i5.exec:
         class: Arii\I5Bundle\Service\AriiExec
-        arguments: [ "@arii_core.portal", "@arii_core.audit","@arii_core.log" ]
+        arguments: [ "@arii_core.portal" ]
